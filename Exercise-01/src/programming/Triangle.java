@@ -1,6 +1,6 @@
 package programming;
 
-public class Triangle extends TwoDimensionalFigure{
+public class Triangle extends Figure {
     public Triangle() {
         super();
     }

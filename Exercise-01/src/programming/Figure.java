@@ -1,19 +1,21 @@
 package programming;
 
+import java.lang.instrument.IllegalClassFormatException;
 import java.util.Arrays;
+import java.util.IllegalFormatException;
 import java.util.stream.Collectors;
 
-public abstract class TwoDimensionalFigure {
+public abstract class Figure {
     protected Point[] oPoints;
 
-    public TwoDimensionalFigure() {
+    public Figure() {
         this.oPoints = new Point[getPointsCount()];
-        for (int i = 0; i < this.oPoints.length; i++){
+        for (int i = 0; i < this.oPoints.length; i++) {
             this.oPoints[i] = new Point();
         }
     }
 
-    public TwoDimensionalFigure(double... pointsCoords){
+    public Figure(double... pointsCoords) {
         if (pointsCoords.length / 2 != getPointsCount()) // Half the args because input comes in (x, y) tuples
             throw new IllegalArgumentException("Figure has " + this.getPointsCount() + " points!");
 
@@ -24,11 +26,12 @@ public abstract class TwoDimensionalFigure {
         }
     }
 
-    public TwoDimensionalFigure(Point... points) {
-        if (points.length != getPointsCount())
-            throw new IllegalArgumentException("Figure has " + this.getPointsCount() + " points!");
-
-        this.oPoints = Arrays.copyOf(points, points.length);
+    public Figure(Point... points) {
+        this(
+                Arrays.stream(points)
+                        .flatMapToDouble(point -> Arrays.stream(new double[]{point.iX, point.iY}))
+                        .toArray()
+        );
     }
 
     public Point[] getPoints() {
@@ -50,22 +53,27 @@ public abstract class TwoDimensionalFigure {
     }
 
     // 5
-    public int compareTo(Object r) {
-        final double areaDiff = ((Rectangle) r).calcArea() - this.calcArea();
-        return Double.compare(areaDiff, 0);
+    public int compareTo(Object f) throws IllegalClassFormatException {
+        if (f == null)
+            throw new NullPointerException();
+        if (!(f instanceof Figure))
+            throw new IllegalClassFormatException();
+
+        var figure = (Figure) f;
+        return Double.compare(this.calcArea(), figure.calcArea());
     }
 
     // 6
 
     @Override
     public String toString() {
-        return "com.nvna.Rectangle{" +
-                "pointsCount=" + this.getPointsCount() + "," +
-                "oPoints{" +
+        return "Figure{\n" +
+                "\tpointsCount=" + this.getPointsCount() + ",\n" +
+                "\toPoints{\n" +
                 Arrays.stream(this.getPoints())
-                        .map(p -> "x=" + p.iX + ", y=" + p.iY)
-                        .collect(Collectors.joining(",\n")) +
-                "}" +
+                        .map(p -> "\t\tx=" + p.iX + ", y=" + p.iY)
+                        .collect(Collectors.joining(",\n")) + "\n" +
+                "\t}\n" +
                 '}';
     }
 

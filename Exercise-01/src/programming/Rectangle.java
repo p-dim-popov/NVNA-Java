@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 
-public class Rectangle extends TwoDimensionalFigure {
+public class Rectangle extends Figure {
     public Rectangle() {
         super();
     }
@@ -89,7 +89,7 @@ public class Rectangle extends TwoDimensionalFigure {
     }
 
     // 12
-    public Rectangle unionRect(Rectangle r) { //Wrong
+    public Rectangle unionRect(Rectangle r) {
         if (Arrays.stream(this.getPoints()).noneMatch(r::isInside))
             return null; //No intersection
 
