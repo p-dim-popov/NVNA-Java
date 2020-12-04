@@ -49,15 +49,10 @@ public class TwoPointRectangle extends Rectangle {
     }
 
     @Override
-    public Rectangle intersectionRect(Rectangle r) {
+    public TwoPointRectangle intersectionRect(Rectangle r) {
         if (Arrays.stream(this.getPoints()).noneMatch(r::isInside))
             return null; // No intersection
 
         return null; // TODO: Implement
-    }
-
-    @Override
-    public String toString() {
-        return super.toString().replace("Figure", "Rectangle");
     }
 }
