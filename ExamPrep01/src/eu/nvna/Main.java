@@ -1,9 +1,5 @@
 package eu.nvna;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -12,11 +8,12 @@ public class Main {
                 new TV("Yamaha",345)
         });
 
-        sales.write("saveall.txt");
-        sales.edit("saveall.txt", 0, new TV("Johny", 123));
+        var path = sales.writeTo("sales.txt");
+        sales.edit(path.toString(), 0, new TV("North American Audio, Inc.", 123));
 
-        var salesResult = new Sales();
-        salesResult.readAll("saveall.txt");
-        System.out.println(Arrays.toString(salesResult.getList()));
+        // new to check if readAll works
+        new Sales()
+                .readAll(path.toString())
+                .forEach(System.out::println);
     }
 }

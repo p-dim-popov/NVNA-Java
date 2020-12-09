@@ -1,7 +1,9 @@
 package eu.nvna;
 
-public interface IFileOperationsProvider {
-    void readAll(String filename);
-    void write(String filename);
-    void edit(String filename, int row, TV tv);
+import java.nio.file.Path;
+
+public interface IFileOperationsProvider<T extends ISerializable<T> > {
+    Iterable<T> readAll(String filename);
+    Path writeTo(String filename);
+    Path edit(String filename, int row, T element);
 }

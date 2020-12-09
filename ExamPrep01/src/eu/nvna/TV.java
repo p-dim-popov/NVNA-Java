@@ -1,6 +1,6 @@
 package eu.nvna;
 
-public class TV implements Comparable<TV>{
+public class TV implements Comparable<TV>, ISerializable<TV>{
     private String brand = "";
     private int inches = 0;
 
@@ -44,5 +44,20 @@ public class TV implements Comparable<TV>{
     @Override
     public int compareTo(TV o) {
         return Integer.compare(this.inches, o.inches);
+    }
+
+    @Override
+    public String serialize() {
+        return String.format(
+                "%s,%d",
+                this.brand.replaceAll(",", "`"),
+                this.inches);
+    }
+
+    public static TV deserialize(String data) {
+        var splittedInput = data.split(",");
+        return new TV(
+                splittedInput[0].replaceAll("`", ","),
+                Integer.parseInt(splittedInput[1]));
     }
 }

@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class Sales implements IFileOperationsProvider {
-    public TV[] getList() {
-        return this.list.toArray(TV[]::new);
+public class Sales implements IFileOperationsProvider<TV> {
+    public Iterable<TV> getList() {
+        return this.list;
     }
 
     private Collection<TV> list = new ArrayList<>();
@@ -29,7 +29,7 @@ public class Sales implements IFileOperationsProvider {
     }
 
     @Override
-    public void readAll(String filename) {
+    public Iterable<TV> readAll(String filename) {
         try {
 //            var file = new File(filename);
 //            try (var scanner = new Scanner(file)) {
@@ -42,46 +42,47 @@ public class Sales implements IFileOperationsProvider {
             this.list.addAll(
                     Files.readAllLines(Path.of(filename))
                             .stream()
-                            .map(x
-                                    -> new TV(
-                                    x.split(",")[0],
-                                    Integer.parseInt(x.split(",")[1])))
+                            .map(TV::deserialize)
                             .collect(Collectors
                                     .toCollection(ArrayList::new)));
+            return this.list;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
     @Override
-    public void write(String filename) {
+    public Path writeTo(String filename) {
         try {
 //            try(var fw = new FileWriter(filename)){
 //                for (var el : this.list) {
 //                    fw.write(el.toString() + "\n");
 //                }
 //            }
-            //OR...
-            Files.writeString(Path.of(filename),
+            // OR...
+            return Files.writeString(Path.of(filename),
                     this.list
                             .stream()
-                            .map(TV::toString)
+                            .map(TV::serialize)
                             .collect(Collectors.joining("\n")));
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
     @Override
-    public void edit(String filename, int row, TV tv) {
+    public Path edit(String filename, int row, TV tv) {
         try {
             var x = new ArrayList<>(Files.readAllLines(Path.of(filename)));
-            x.set(row, tv.toString());
-            Files.writeString(
+            x.set(row, tv.serialize());
+            return Files.writeString(
                     Path.of(filename),
                     String.join("\n", x));
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 }

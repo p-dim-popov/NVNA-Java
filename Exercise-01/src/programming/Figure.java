@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.stream.Collectors;
 
-public abstract class Figure {
+public abstract class Figure implements Comparable<Object>{
     protected Point[] oPoints;
 
     public Figure() {
@@ -53,11 +53,11 @@ public abstract class Figure {
     }
 
     // 5
-    public int compareTo(Object f) throws IllegalClassFormatException {
+    public int compareTo(Object f) {
         if (f == null)
             throw new NullPointerException();
         if (!(f instanceof Figure))
-            throw new IllegalClassFormatException();
+            throw new IllegalArgumentException();
 
         var figure = (Figure) f;
         return Double.compare(this.calcArea(), figure.calcArea());
@@ -67,7 +67,7 @@ public abstract class Figure {
 
     @Override
     public String toString() {
-        return "Figure{\n" +
+        return this.getClass().getSimpleName() + "{\n" +
                 "\tpointsCount=" + this.getPointsCount() + ",\n" +
                 "\toPoints{\n" +
                 Arrays.stream(this.getPoints())
